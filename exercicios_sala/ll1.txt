@@ -1,0 +1,38 @@
+start : value
+value : A | list
+list  : "[" [value ("," value)*] "]"
+
+                                FIRST         FOLLOW
+1.   start -> value             { A, "[" }    start: { "$" }
+2.   value -> A                 { A }         value: { "]", ",", "$" }
+3.   value -> list              { "[" }         
+4.   list  -> "[" args "]"      { "[" }       list : { "]", ",", "$" }
+5.   args  -> ε                 { ε }         args : { "]" }
+6.   args  -> value tail        { A, "[" }
+7.   tail  -> "," value tail    { "," }       tail : { "]" }
+8.   tail  -> ε                 { ε }  
+
+FIRST(regra): 
+      conjunto de todos os símbolos terminais que que podem 
+      aparecer como o primeiro símbolo para aquela regra. Tratamos as 
+      transições vazias (ε) como sendo símbolos terminais
+
+FOLLOW(símbolo não terminal):
+      conjunto de todos os símbolos terminais (sem incluir o ε) que podem
+      seguir um determinado símbolo não-terminal.
+
+
+Para cada elemento no FIRST(regra) de "nome -> regra" incluímos
+uma referência para esta regra na célula (nome, símbolo terminal) 
+
+
+      |  [  |  ]  |  ,  |  A  |  $
+=====================================
+start |  1  |     |     |  1  |
+value |  3  |     |     |  2  |
+list  |  4  |     |     |     |
+args  |  6  |  5  |     |  6  |
+tail  |     |  8  |  7  |     |
+
+
+
